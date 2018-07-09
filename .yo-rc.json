@@ -1,0 +1,14 @@
+{
+  "generator-videojs-plugin": {
+    "scope": "",
+    "name": "nonlin-vast",
+    "description": "The plugin enables to show nonlinear VAST ads.",
+    "author": "Szabolcs Stremler",
+    "license": "mit",
+    "pluginType": "advanced",
+    "css": true,
+    "docs": true,
+    "lang": true,
+    "husky": "lint"
+  }
+}
