@@ -26,7 +26,9 @@ This is the simplest case. Get the script in whatever way you prefer and include
 <script>
   var player = videojs('my-video');
 
-  player.nonlinVast();
+  player.nonlinVast({
+    url: 'https://syndication.example.com/ad.php?idzone=123'
+  });
 </script>
 ```
 
@@ -44,7 +46,9 @@ require('videojs-nonlin-vast');
 
 var player = videojs('my-video');
 
-player.nonlinVast();
+player.nonlinVast({
+  url: 'https://syndication.example.com/ad.php?idzone=123'
+});
 ```
 
 ### RequireJS/AMD
@@ -55,7 +59,9 @@ When using with RequireJS (or another AMD library), get the script in whatever w
 require(['video.js', 'videojs-nonlin-vast'], function(videojs) {
   var player = videojs('my-video');
 
-  player.nonlinVast();
+  player.nonlinVast({
+    url: 'https://syndication.example.com/ad.php?idzone=123'
+  });
 });
 ```
 
