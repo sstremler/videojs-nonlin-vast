@@ -1,5 +1,5 @@
 import videojs from 'video.js';
-import vast from 'vast-client';
+// import * as DMVAST from 'vast-client';
 import { version as VERSION } from '../package.json';
 
 const Plugin = videojs.getPlugin('plugin');
@@ -37,15 +37,18 @@ class NonlinVast extends Plugin {
       this.player.addClass('vjs-nonlin-vast');
     });
 
-    this.player.on('vast-ready', this.onVastReady);
-    this.player.on('adscanceled', this.onAdsCanceled);
+    this.on('vast-ready', this.onVastReady);
+    this.on('adcanceled', this.onAdCanceled);
+    let scope = this;
+    this.on('adclosed', this.onAdClosed);
+    this.player.on('pause', () => { this.showAd() });
 
     this.getContent();
   }
 
   getContent() {
     // query vast url given in options
-    vast.client.get(this.options.url, (response) => {
+    DMVAST.client.get(this.options.url, (response) => {
       if (response) {
 
         for (let adIdx = 0; adIdx < response.ads.length; adIdx++) {
@@ -55,7 +58,7 @@ class NonlinVast extends Plugin {
             let creative = ad.creatives[creaIdx];
 
             if (creative.type === "nonlinear" && creative.variations.length) {
-              this.player.vastTracker = new vast.tracker(ad, creative, creative.variations[0]);
+              this.player.vastTracker = new DMVAST.tracker(ad, creative, creative.variations[0]);
             }
           }
 
@@ -81,12 +84,12 @@ class NonlinVast extends Plugin {
   setAd() {
     let variation = this.player.vastTracker.variation;
 
-    if(variation.type.substr(0,5) === 'image') {
+    if (variation.type.substr(0, 5) === 'image') {
       let adOverlay = document.createElement("div");
       let adDiv = document.createElement("div");
       let adAnchor = document.createElement("a");
       let adImg = document.createElement("img");
-      let adCloseBtn = document.createElement("button");
+      let adCloseBtn = document.createElement("div");
 
       this.player.el().appendChild(adOverlay)
       adOverlay.appendChild(adDiv);
@@ -94,19 +97,41 @@ class NonlinVast extends Plugin {
       adAnchor.appendChild(adImg);
       adDiv.appendChild(adCloseBtn);
       adOverlay.setAttribute('class', 'nonlinear-ad');
-      adAnchor.setAttribute('href',variation.nonlinearClickThroughURLTemplate);
-      adImg.setAttribute('width',variation.width);
-      adImg.setAttribute('height',variation.height);
-      adImg.setAttribute('src',variation.staticResource);
-      console.log('added')
+      adAnchor.setAttribute('href', variation.nonlinearClickThroughURLTemplate);
+      adAnchor.setAttribute('target', '_blank');
+      adAnchor.style.width = variation.width + 'px';
+      adAnchor.style.height = variation.height + 'px';
+      adImg.setAttribute('width', variation.width);
+      adImg.setAttribute('height', variation.height);
+      adImg.setAttribute('src', variation.staticResource);
+      adCloseBtn.setAttribute('class', 'nonlinear-ad-btn');
+      adCloseBtn.innerHTML = 'Close (x)';
+
+      adCloseBtn.addEventListener('click', () => { this.trigger('adclosed'); })
     }
+  }
+
+  hideAd() {
+    let adOverlay = document.getElementsByClassName('nonlinear-ad')[0];
+    adOverlay.style.display = 'none';
+    this.player.play();
+  }
+
+  showAd() {
+    let adOverlay = document.getElementsByClassName('nonlinear-ad')[0];
+    adOverlay.style.display = 'block';
   }
 
   onVastReady(event) { /*vast-ready event*/ }
 
-  onAdsCanceled(event) { /*adscanceled event*/ }
+  onAdCanceled(event) { /*adcanceled event*/ }
 
   onClickThrough(event) { /*clickthrough event*/ }
+
+  onAdClosed(event) {
+    /*adclose event*/
+    this.hideAd();
+  }
 
 }
 

@@ -9,32 +9,36 @@
  *   https://www.w3.org/TR/css-variables-1/
  */
 
-
-/* Note: all vars must be defined here, there are no "local" vars */
-:root {
-  --main-color: red;
-  --base-font-size: 9;
-  --font-size: 7;
-}
-
 .video-js {
+  & .nonlinear-ad {
+    height: 100%;
+    width: 100%;
+    position: absolute;
+  }
 
-  &.vjs-nonlin-vast {
-    /* This class is added to the video.js element by the plugin by default. */
+  & .nonlinear-ad>div {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 100%;
+    text-align: center;
+    line-height: 0;
+  }
+
+  & .nonlinear-ad a {
     display: block;
+    margin: 0 auto;
+  }
 
-    & .remove-me, & .remove-me-too, &.finally-remove-me {
-      /* examples of postcss syntax, you probably want to remove this */
-
-      color: var(--main-color);
-
-      /**
-       * Note that you have to use calc and multiply by a value with a unit
-       * prepending the unit like `var(--base-font-size)px` or
-       * `calc(10 * var(--base-font-size)em` will NOT work!
-       */
-      font-size: calc(var(--font-size) * 8 * var(--base-font-size) * 1px);
-
-    }
+  & .nonlinear-ad-btn {
+    width: 80px;
+    height: 35px;
+    background-color: white;
+    color: black;
+    margin: 0 auto;
+    font-size: 15px;
+    vertical-align: middle;
+    line-height: 31px;
+    cursor: pointer;
   }
 }

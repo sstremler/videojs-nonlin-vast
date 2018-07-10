@@ -1,6 +1,6 @@
 {
   "name": "videojs-nonlin-vast",
-  "version": "0.0.0",
+  "version": "0.1.0",
   "description": "The plugin enables to show nonlinear VAST ads.",
   "main": "dist/videojs-nonlin-vast.cjs.js",
   "module": "dist/videojs-nonlin-vast.es.js",

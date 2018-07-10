@@ -1,11 +1,13 @@
 <!doctype html>
 <html>
+
 <head>
   <meta charset="utf-8">
   <title>videojs-nonlin-vast Demo</title>
   <link href="node_modules/video.js/dist/video-js.css" rel="stylesheet">
   <link href="dist/videojs-nonlin-vast.css" rel="stylesheet">
 </head>
+
 <body>
   <video id="videojs-nonlin-vast-player" class="video-js vjs-default-skin" controls>
     <source src="//vjs.zencdn.net/v/oceans.mp4" type='video/mp4'>
@@ -19,12 +21,13 @@
   <script src="node_modules/vast-client/vast-client.js"></script>
   <script src="dist/videojs-nonlin-vast.js"></script>
   <script>
-    (function(window, videojs) {
-      var player = window.player = videojs('videojs-nonlin-vast-player');
-      var nonlinVast = window.nonlinVast = player.nonlinVast({
-		url: 'https://syndication.exosrv.com/splash.php?idzone=3057714'
-	  });
-    }(window, window.videojs));
+  (function(window, videojs) {
+    var player = window.player = videojs('videojs-nonlin-vast-player');
+    var nonlinVast = window.nonlinVast = player.nonlinVast({
+      url: 'https://syndication.example.com/ad.php?idzone=123'
+    });
+  }(window, window.videojs));
   </script>
 </body>
+
 </html>
