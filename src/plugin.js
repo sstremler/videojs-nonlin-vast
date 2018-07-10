@@ -1,5 +1,6 @@
 import videojs from 'video.js';
-import {version as VERSION} from '../package.json';
+import vast from 'vast-client';
+import { version as VERSION } from '../package.json';
 
 const Plugin = videojs.getPlugin('plugin');
 
@@ -35,7 +36,78 @@ class NonlinVast extends Plugin {
     this.player.ready(() => {
       this.player.addClass('vjs-nonlin-vast');
     });
+
+    this.player.on('vast-ready', this.onVastReady);
+    this.player.on('adscanceled', this.onAdsCanceled);
+
+    this.getContent();
   }
+
+  getContent() {
+    // query vast url given in options
+    vast.client.get(this.options.url, (response) => {
+      if (response) {
+
+        for (let adIdx = 0; adIdx < response.ads.length; adIdx++) {
+          let ad = response.ads[adIdx];
+
+          for (let creaIdx = 0; creaIdx < ad.creatives.length; creaIdx++) {
+            let creative = ad.creatives[creaIdx];
+
+            if (creative.type === "nonlinear" && creative.variations.length) {
+              this.player.vastTracker = new vast.tracker(ad, creative, creative.variations[0]);
+            }
+          }
+
+          if (this.player.vastTracker) {
+            // vast tracker and content is ready to go, trigger event
+            this.player.trigger('vast-ready');
+            this.player.vastTracker.on('clickthrough', this.onClickThrough);
+            this.setAd();
+            break;
+          } else {
+            // Inform ad server we can't find suitable media file for this ad
+            vast.util.track(ad.errorURLTemplates, { ERRORCODE: 403 });
+          }
+        }
+      }
+
+      if (!this.player.vastTracker) {
+        this.player.trigger('adscanceled');
+      }
+    });
+  }
+
+  setAd() {
+    let variation = this.player.vastTracker.variation;
+
+    if(variation.type.substr(0,5) === 'image') {
+      let adOverlay = document.createElement("div");
+      let adDiv = document.createElement("div");
+      let adAnchor = document.createElement("a");
+      let adImg = document.createElement("img");
+      let adCloseBtn = document.createElement("button");
+
+      this.player.el().appendChild(adOverlay)
+      adOverlay.appendChild(adDiv);
+      adDiv.appendChild(adAnchor);
+      adAnchor.appendChild(adImg);
+      adDiv.appendChild(adCloseBtn);
+      adOverlay.setAttribute('class', 'nonlinear-ad');
+      adAnchor.setAttribute('href',variation.nonlinearClickThroughURLTemplate);
+      adImg.setAttribute('width',variation.width);
+      adImg.setAttribute('height',variation.height);
+      adImg.setAttribute('src',variation.staticResource);
+      console.log('added')
+    }
+  }
+
+  onVastReady(event) { /*vast-ready event*/ }
+
+  onAdsCanceled(event) { /*adscanceled event*/ }
+
+  onClickThrough(event) { /*clickthrough event*/ }
+
 }
 
 // Define default values for the plugin's `state` object here.

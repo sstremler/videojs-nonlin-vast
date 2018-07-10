@@ -16,11 +16,14 @@
     <li><a href="docs/api/">Read generated docs.</a></li>
   </ul>
   <script src="node_modules/video.js/dist/video.js"></script>
+  <script src="node_modules/vast-client/vast-client.js"></script>
   <script src="dist/videojs-nonlin-vast.js"></script>
   <script>
     (function(window, videojs) {
       var player = window.player = videojs('videojs-nonlin-vast-player');
-      var nonlinVast = window.nonlinVast = player.nonlinVast();
+      var nonlinVast = window.nonlinVast = player.nonlinVast({
+		url: 'https://syndication.exosrv.com/splash.php?idzone=3057714'
+	  });
     }(window, window.videojs));
   </script>
 </body>

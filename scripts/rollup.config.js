@@ -52,18 +52,21 @@ process.argv.forEach((a) => {
 const globals = {
   umd: {
     'video.js': 'videojs',
+    'vast-client': 'vast',
     'global': 'window',
     'global/window': 'window',
     'global/document': 'document'
   },
   module: {
-    'video.js': 'videojs'
+    'video.js': 'videojs',
+    'vast-client': 'vast',
   },
   test: {
     'qunit': 'QUnit',
     'qunitjs': 'QUnit',
     'sinon': 'sinon',
-    'video.js': 'videojs'
+    'video.js': 'videojs',
+    'vast-client': 'vast',
   }
 };
 
